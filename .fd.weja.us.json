@@ -1,0 +1,18 @@
+{
+    "FdTest":               false,
+    "FdVerbose":            false,
+    "FdDebug":              false,
+    "FdBuildContext":       "go",
+    "FdRepo":               "micro-server-go-graphql",
+    "FdService":            "graphql",
+    "FdRouteBase":          "/api/sheet/",
+    "FdTitle":              "GoSheet",
+    "FdTargetAlias":        "local",
+    "FdTargetDomain":       "weja.us",
+    "FdTargetImageTag":     "latest",
+    "FdTargetLocalPort":    "5430",
+    "FdTargetLogLevel":     "info",
+    "FdTargetProjectId":    "weja-us",
+    "FdTargetRealm":        "too.fb.",
+    "FdTargetRemotePort":   "8080"
+}

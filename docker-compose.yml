@@ -1,0 +1,20 @@
+
+
+version: '3.8'
+
+services:
+    graphql:
+        image: ${IMAGE_URL}
+        build:
+            context: .
+        container_name: ${CONTAINER}
+        env_file:
+            - .env.${TARGET_ALIAS}
+        command:
+            - /bin/sh
+            - -c
+            - pwd && EXECUTABLE=${EXECUTABLE} SERVICE=${SERVICE} /go/${SERVICE}/docker-entrypoint.sh
+        volumes:
+            - ".secrets:/secrets"
+        ports:
+            - "0.0.0.0:${TARGET_LOCAL_PORT}:${TARGET_REMOTE_PORT}"
