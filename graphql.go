@@ -1,11 +1,12 @@
-
-
 package main
 
 import (
-	"github.com/99designs/gqlgen/example/todo"
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
@@ -16,13 +17,22 @@ import (
 const defaultPort = "8080"
 
 func main() {
-	port	:= os.Getenv("PORT")
-	if port == "" { port = defaultPort }
-	srv		:= handler.NewDefaultServer( generated.NewExecutableSchema( generated.Config{ Resolvers: &graph.Resolver{}}))
-	srv1	:= handler.New( todo.NewExecutableSchema( todo.New()))
-	http.Handle("/", playground.Handler("GraphQL playground", "/query" ))
-	http.Handle("/query", srv )
-	http.Handle("/query1", srv1 )
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port )
-	log.Fatal( http.ListenAndServe( ":" + port, nil ))
+	router := chi.NewRouter()
+	port := os.Getenv("TARGET_REMOTE_PORT")
+
+	if port == "" {
+		port = defaultPort
+	}
+
+	// router.Use( cors.New( cors.Options{ AllowCredentials: true, Debug: true }).Handler)								// Add CORS to request -- https://github.com/rs/cors
+	router.Use(cors.New(cors.Options{}).Handler)
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	srv.AddTransport(&transport.Websocket{Upgrader: websocket.Upgrader{CheckOrigin: nil, ReadBufferSize: 1024, WriteBufferSize: 1024}})
+
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", srv)
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

@@ -19,7 +19,7 @@
     </EXTENSION>
     <kind value="FILE" />
     <directory value="$PROJECT_DIR$" />
-    <filePath value="$PROJECT_DIR$/server.go" />
+    <filePath value="$PROJECT_DIR$/graphql.go" />
     <output_directory value="$PROJECT_DIR$/dist" />
     <method v="2" />
   </configuration>

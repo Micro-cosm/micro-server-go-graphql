@@ -2,39 +2,23 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
-}
-
 type Presby struct {
-	ID        string `json:"id"`
-	IsActive  string `json:"isActive"`
-	Last      string `json:"last"`
-	Guests    string `json:"guests"`
-	Guestings string `json:"guestings"`
-	Hostings  string `json:"hostings"`
-	Seats     string `json:"seats"`
-	Unknown1  string `json:"unknown1"`
-	Unknown2  string `json:"unknown2"`
-	Email     string `json:"email"`
-	Home      string `json:"home"`
-	Cell      string `json:"cell"`
-	Smail     string `json:"smail"`
-	City      string `json:"city"`
-	St        string `json:"st"`
-	Zip       string `json:"zip"`
-	Mmail     string `json:"mmail"`
-}
-
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-}
-
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	Key       string   `json:"key"`
+	ID        int      `json:"id"`
+	IsActive  bool     `json:"isActive"`
+	Last      string   `json:"last"`
+	Guests    []string `json:"guests"`
+	Guestings []string `json:"guestings"`
+	Hostings  []string `json:"hostings"`
+	Seats     int      `json:"seats"`
+	Unknown1  int      `json:"unknown1"`
+	Unknown2  int      `json:"unknown2"`
+	Email     string   `json:"email"`
+	Home      string   `json:"home"`
+	Cell      string   `json:"cell"`
+	Smail     string   `json:"smail"`
+	City      string   `json:"city"`
+	St        string   `json:"st"`
+	Zip       string   `json:"zip"`
+	Mmail     string   `json:"mmail"`
 }

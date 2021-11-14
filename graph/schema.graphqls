@@ -1,20 +1,17 @@
 
 
-type Query  {
-    presbies:   [Presby!]!
-    todos:      [Todo!]!
-}
-
+type Query  { presbies: [Presby!]! }
 type Presby {
-    id:         String!
-    isActive:   String!
+    key:        String!
+    id:         ID!
+    isActive:   Boolean!
     last:       String!
-    guests:     String!
-    guestings:  String!
-    hostings:   String!
-    seats:      String!
-    unknown1:   String!
-    unknown2:   String!
+    guests:     [String!]!
+    guestings:  [String!]!
+    hostings:   [String!]!
+    seats:      Int!
+    unknown1:   Int!
+    unknown2:   Int!
     email:      String!
     home:       String!
     cell:       String!
@@ -24,22 +21,3 @@ type Presby {
     zip:        String!
     mmail:      String!
 }
-
-type Todo   {
-    id:         ID!
-    text:       String!
-    done:       Boolean!
-    user:       User!
-}
-
-type User {
-    id:         ID!
-    name:       String!
-}
-
-input NewTodo {
-    text:       String!
-    userId:     String!
-}
-
-type Mutation { createTodo( input: NewTodo! ): Todo! }
