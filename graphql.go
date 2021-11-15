@@ -24,8 +24,7 @@ func main() {
 		port = defaultPort
 	}
 
-	// router.Use( cors.New( cors.Options{ AllowCredentials: true, Debug: true }).Handler)								// Add CORS to request -- https://github.com/rs/cors
-	router.Use(cors.New(cors.Options{}).Handler)
+	router.Use(cors.New(cors.Options{AllowedOrigins: []string{"*"}, AllowCredentials: true, Debug: true}).Handler)
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 	srv.AddTransport(&transport.Websocket{Upgrader: websocket.Upgrader{CheckOrigin: nil, ReadBufferSize: 1024, WriteBufferSize: 1024}})

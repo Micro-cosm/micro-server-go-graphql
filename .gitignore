@@ -6,11 +6,12 @@ go.mod
 go.sum
 
 .ARCHIVE
+.secrets
+**/.secrets
+**/.DS_Store
 **/*.NEW
 **/*.SAVE
 
 .idea
 
 env
-**/.secrets
-**/.DS_Store
