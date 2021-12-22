@@ -8,13 +8,26 @@ services:
         build:
             context: .
         container_name: ${CONTAINER}
-        env_file:
-            - .env.${TARGET_ALIAS}
-        command:
-            - /bin/sh
-            - -c
-            - pwd && EXECUTABLE=${EXECUTABLE} SERVICE=${SERVICE} /go/${SERVICE}/docker-entrypoint.sh
+        environment:
+            - GOOGLE_APPLICATION_CREDENTIALS=/secrets/credentials.json
+            - DEBUG=${DEBUG}
+            - EXECUTABLE=${EXECUTABLE}
+            - LOGS=${LOGS}
+            - LOCAL_PORT=${TARGET_LOCAL_PORT}
+            - REMOTE_PORT=${TARGET_REMOTE_PORT}
+            - ROUTE_BASE=${ROUTE_BASE}
+            - SERVICE=${SERVICE}
+            - TITLE=${TITLE}
+            - TZ=America/Denver
         volumes:
             - ".secrets:/secrets"
         ports:
             - "0.0.0.0:${TARGET_LOCAL_PORT}:${TARGET_REMOTE_PORT}"
+
+
+#        entrypoint:
+#            - /bin/sh
+#            - -c
+#            - EXECUTABLE=${EXECUTABLE} SERVICE=${SERVICE} /go/${SERVICE}/docker-entrypoint.sh
+#        env_file:
+#            - .env.${TARGET_ALIAS}

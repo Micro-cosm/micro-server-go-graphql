@@ -9,6 +9,7 @@
             "--region=us-central1",
             "--platform=managed",
             "--allow-unauthenticated",
+            "--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/secrets/credentials.json",
             "--set-env-vars=ALIAS=${_TARGET_ALIAS}",
             "--set-env-vars=DEBUG=${_DEBUG}",
             "--set-env-vars=EXECUTABLE=${_EXECUTABLE}",

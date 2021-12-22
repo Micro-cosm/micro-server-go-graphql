@@ -1,9 +1,15 @@
 
-vendor/
 
-.dockerignore
-.gcloudignore
 
+.dist
+.env
+.env.*
+.fd.*
 .gitignore
-
-!docker-entrypoint.sh
+.dockerignore
+.git
+.idea
+.run
+.SAVE
+Dockerfile
+docker-compose.yml
