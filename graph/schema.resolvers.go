@@ -6,31 +6,17 @@ package graph
 import (
 	"context"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 
-	"google.golang.org/api/option"
-	sheets "google.golang.org/api/sheets/v4"
 	"weja.us/micro-cosm/micro-server-go-graphql/graph/generated"
 	"weja.us/micro-cosm/micro-server-go-graphql/graph/model"
 )
 
 func (r *queryResolver) Presbies(ctx context.Context) ([]model.Presby, error) {
-	// sheetId := "1V8L8Ub1FRKhXo1pLxwxXiBwIz1TWtatqheHh4RPltJ8"
-	// sheetRange := "Presbies!A2:Q"
-	// sheetId := os.Getenv("ROSTER_SHEET_ID")
-	// sheetRange := os.Getenv("ROSTER_TAB_NAME")
+	newPresbies := make([]model.Presby, len(Presbies))
 
-	rosterSheetId := "1V8L8Ub1FRKhXo1pLxwxXiBwIz1TWtatqheHh4RPltJ8"
-	rosterSheetRange := "Presbies-dev!A2:Q"
-	sheetId := rosterSheetId
-	sheetRange := rosterSheetRange
-
-	presbies := getSheet(sheetId, sheetRange).Values
-	newPresbies := make([]model.Presby, len(presbies))
-
-	for cnt, field := range presbies {
+	for cnt, field := range Presbies {
 		log.Printf("presby record  #%d", cnt)
 		tmpId, e := strconv.ParseUint(field[0].(string), 10, 64)
 		if e != nil {
@@ -114,20 +100,7 @@ type queryResolver struct{ *Resolver }
 // !!! WARNING !!!
 // The code below was going to be deleted when updating resolvers. It has been copied here so you have
 // one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete it when you're done.
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
-func getSheet(spreadsheetId string, readRange string) *sheets.ValueRange {
-	ctx := context.Background()
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", ".secrets/credentials.json")
-
-	srv, err := sheets.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
-
-	if err != nil {
-		log.Fatalf("Unable to retrieve Sheets client: %v", err)
-	}
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
-	if err != nil {
-		log.Fatalf("Unable to retrieve data from sheet: %v", err)
-	}
-	return resp
-}
+var Presbies [][]interface{}
