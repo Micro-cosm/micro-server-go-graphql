@@ -5,6 +5,7 @@ vendor
 go.mod
 go.sum
 
+.run
 .ARCHIVE
 .secrets
 **/.secrets
