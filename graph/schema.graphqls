@@ -10,8 +10,8 @@ type Presby {
     guestings:  [String!]!
     hostings:   [String!]!
     seats:      Int!
-    unknown1:   Int!
-    unknown2:   Int!
+    subs:       Int!
+    steps:      Int!
     email:      String!
     home:       String!
     cell:       String!
@@ -19,5 +19,4 @@ type Presby {
     city:       String!
     st:         String!
     zip:        String!
-    mmail:      String!
 }

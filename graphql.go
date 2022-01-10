@@ -1,68 +1,71 @@
 package main
 
 import (
-	"context"
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/go-chi/chi"
-	"github.com/gorilla/websocket"
-	"github.com/rs/cors"
-	"google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
+	"github.com/rs/cors"
 	"weja.us/micro-cosm/micro-server-go-graphql/graph"
 	"weja.us/micro-cosm/micro-server-go-graphql/graph/generated"
+	"weja.us/micro-cosm/micro-server-go-graphql/lib"
 )
 
 const defaultPort = "8080"
 
-var (
-	rosterSheetId    = "1V8L8Ub1FRKhXo1pLxwxXiBwIz1TWtatqheHh4RPltJ8"
-	rosterSheetRange = "Presbies-dev!A2:Q"
-)
-
 func main() {
-	router := chi.NewRouter()
-	// sheetId := os.Getenv("ROSTER_SHEET_ID")
-	// sheetRange := os.Getenv("ROSTER_TAB_NAME")
+	r := chi.NewRouter()
 	port := os.Getenv("TARGET_REMOTE_PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	graph.Presbies = getSheet(rosterSheetId, rosterSheetRange).Values
+	r.Use(cors.New(cors.Options{
+		AllowedHeaders:   []string{"*"},
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
 
-	router.Use(cors.New(cors.Options{AllowedOrigins: []string{"*"}, AllowCredentials: true, Debug: true}).Handler)
-
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
-	srv.AddTransport(&transport.Websocket{Upgrader: websocket.Upgrader{CheckOrigin: nil, ReadBufferSize: 1024, WriteBufferSize: 1024}})
-
-	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	router.Handle("/query", srv)
-
+	r.Route("/tab", func(r chi.Router) {
+		r.Route("/{tabName}", func(r chi.Router) {
+			r.Use(lib.QueryCtx)
+			r.Route("/query", func(r chi.Router) {
+				srv := handler.NewDefaultServer(
+					generated.NewExecutableSchema(
+						generated.Config{Resolvers: &graph.Resolver{}},
+					),
+				)
+				srv.AddTransport(
+					&transport.Websocket{
+						Upgrader: websocket.Upgrader{
+							CheckOrigin:     nil,
+							ReadBufferSize:  1024,
+							WriteBufferSize: 1024,
+						},
+					},
+				)
+				log.Printf("!!!! query away !!!!")
+				r.Handle("/", srv)
+			})
+		})
+	})
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
 
-func getSheet(spreadsheetId string, readRange string) *sheets.ValueRange {
-	ctx := context.Background()
-	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", ".secrets/credentials.json")
-	if err != nil {
-		log.Fatalf("Unable to retrieve Sheets client: %v", err)
-	}
-
-	srv, err := sheets.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
-
-	if err != nil {
-		log.Fatalf("Unable to retrieve Sheets client: %v", err)
-	}
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
-	if err != nil {
-		log.Fatalf("Unable to retrieve data from sheet: %v", err)
-	}
-
-	return resp
-}
+// r.HandleFunc("/favicon.ico", faviconHandler)
+// r.Handle("/", playground.Handler("GraphQL playground", "/query"))
+// r.Route("/query", func(r chi.Router) { // r.Handle("/query", srv)
+// 	Presbies = getSheet(RosterSheetId, RosterDefaultTab+RosterSheetRange).Values
+// 	r.Handle("/", srv)
+// })
+// r.Handle("/", playground.Handler("GraphQL playground", "/tab/Presbies/query"))
+// func faviconHandler(w http.ResponseWriter, r *http.Request) {
+// 	log.Printf("!!!!!!!!!!!!!!! ico, i-co, i, co !!!!!!!!!!!!!!!!!")
+// 	http.ServeFile(w, r, "favicon.ico")
+// }

@@ -11,8 +11,8 @@ type Presby struct {
 	Guestings []string `json:"guestings"`
 	Hostings  []string `json:"hostings"`
 	Seats     int      `json:"seats"`
-	Unknown1  int      `json:"unknown1"`
-	Unknown2  int      `json:"unknown2"`
+	Subs      int      `json:"subs"`
+	Steps     int      `json:"steps"`
 	Email     string   `json:"email"`
 	Home      string   `json:"home"`
 	Cell      string   `json:"cell"`
@@ -20,5 +20,4 @@ type Presby struct {
 	City      string   `json:"city"`
 	St        string   `json:"st"`
 	Zip       string   `json:"zip"`
-	Mmail     string   `json:"mmail"`
 }

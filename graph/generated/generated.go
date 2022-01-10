@@ -54,12 +54,11 @@ type ComplexityRoot struct {
 		IsActive  func(childComplexity int) int
 		Key       func(childComplexity int) int
 		Last      func(childComplexity int) int
-		Mmail     func(childComplexity int) int
 		Seats     func(childComplexity int) int
 		Smail     func(childComplexity int) int
 		St        func(childComplexity int) int
-		Unknown1  func(childComplexity int) int
-		Unknown2  func(childComplexity int) int
+		Subs      func(childComplexity int) int
+		Steps     func(childComplexity int) int
 		Zip       func(childComplexity int) int
 	}
 
@@ -164,13 +163,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Presby.Last(childComplexity), true
 
-	case "Presby.mmail":
-		if e.complexity.Presby.Mmail == nil {
-			break
-		}
-
-		return e.complexity.Presby.Mmail(childComplexity), true
-
 	case "Presby.seats":
 		if e.complexity.Presby.Seats == nil {
 			break
@@ -192,19 +184,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Presby.St(childComplexity), true
 
-	case "Presby.unknown1":
-		if e.complexity.Presby.Unknown1 == nil {
+	case "Presby.subs":
+		if e.complexity.Presby.Subs == nil {
 			break
 		}
 
-		return e.complexity.Presby.Unknown1(childComplexity), true
+		return e.complexity.Presby.Subs(childComplexity), true
 
-	case "Presby.unknown2":
-		if e.complexity.Presby.Unknown2 == nil {
+	case "Presby.steps":
+		if e.complexity.Presby.Steps == nil {
 			break
 		}
 
-		return e.complexity.Presby.Unknown2(childComplexity), true
+		return e.complexity.Presby.Steps(childComplexity), true
 
 	case "Presby.zip":
 		if e.complexity.Presby.Zip == nil {
@@ -282,8 +274,8 @@ type Presby {
     guestings:  [String!]!
     hostings:   [String!]!
     seats:      Int!
-    unknown1:   Int!
-    unknown2:   Int!
+    subs:       Int!
+    steps:      Int!
     email:      String!
     home:       String!
     cell:       String!
@@ -291,7 +283,6 @@ type Presby {
     city:       String!
     st:         String!
     zip:        String!
-    mmail:      String!
 }
 `, BuiltIn: false},
 }
@@ -634,7 +625,7 @@ func (ec *executionContext) _Presby_seats(ctx context.Context, field graphql.Col
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Presby_unknown1(ctx context.Context, field graphql.CollectedField, obj *model.Presby) (ret graphql.Marshaler) {
+func (ec *executionContext) _Presby_subs(ctx context.Context, field graphql.CollectedField, obj *model.Presby) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -652,7 +643,7 @@ func (ec *executionContext) _Presby_unknown1(ctx context.Context, field graphql.
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Unknown1, nil
+		return obj.Subs, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -669,7 +660,7 @@ func (ec *executionContext) _Presby_unknown1(ctx context.Context, field graphql.
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Presby_unknown2(ctx context.Context, field graphql.CollectedField, obj *model.Presby) (ret graphql.Marshaler) {
+func (ec *executionContext) _Presby_steps(ctx context.Context, field graphql.CollectedField, obj *model.Presby) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -687,7 +678,7 @@ func (ec *executionContext) _Presby_unknown2(ctx context.Context, field graphql.
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Unknown2, nil
+		return obj.Steps, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -933,41 +924,6 @@ func (ec *executionContext) _Presby_zip(ctx context.Context, field graphql.Colle
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Zip, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Presby_mmail(ctx context.Context, field graphql.CollectedField, obj *model.Presby) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Presby",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Mmail, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2271,13 +2227,13 @@ func (ec *executionContext) _Presby(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "unknown1":
-			out.Values[i] = ec._Presby_unknown1(ctx, field, obj)
+		case "subs":
+			out.Values[i] = ec._Presby_subs(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "unknown2":
-			out.Values[i] = ec._Presby_unknown2(ctx, field, obj)
+		case "steps":
+			out.Values[i] = ec._Presby_steps(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2313,11 +2269,6 @@ func (ec *executionContext) _Presby(ctx context.Context, sel ast.SelectionSet, o
 			}
 		case "zip":
 			out.Values[i] = ec._Presby_zip(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "mmail":
-			out.Values[i] = ec._Presby_mmail(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
