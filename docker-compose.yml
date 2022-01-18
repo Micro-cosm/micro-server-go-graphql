@@ -20,14 +20,12 @@ services:
             - TITLE=${TITLE}
             - TZ=America/Denver
         volumes:
-            - ".secrets:/secrets"
+            - ./.secrets:/.secrets
         ports:
             - "0.0.0.0:${TARGET_LOCAL_PORT}:${TARGET_REMOTE_PORT}"
-
-
-#        entrypoint:
-#            - /bin/sh
-#            - -c
-#            - EXECUTABLE=${EXECUTABLE} SERVICE=${SERVICE} /go/${SERVICE}/docker-entrypoint.sh
+        entrypoint:
+            - /bin/sh
+            - -c
+            - /${SERVICE}/docker-entrypoint.sh
 #        env_file:
 #            - .env.${TARGET_ALIAS}

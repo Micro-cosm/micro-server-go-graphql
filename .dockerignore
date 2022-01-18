@@ -1,9 +1,7 @@
 
 
-
+**/*.md
 .dist
-.env
-.env.*
 .fd.*
 .gitignore
 .dockerignore

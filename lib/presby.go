@@ -33,11 +33,15 @@ func QueryCtx(next http.Handler) http.Handler {
 
 func getSheet(spreadsheetId string, readRange string) *sheets.ValueRange {
 	ctx := context.Background()
-	err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", ".secrets/credentials.json")
-	if err != nil {
-		log.Fatalf("Unable to retrieve Sheets client: %v", err)
-	}
-	service, err := sheets.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
+
+	// err 		:= os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/.secrets/credentials.json")
+	// if err 	!= nil { log.Fatalf("Unable to retrieve Sheets client: %v", err)}
+
+	ADC := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+	// if err != nil {log.Fatalf("Unable to retrieve Sheets client: %v", err)}
+
+	// service, err := sheets.NewService(ctx, option.WithCredentialsFile( os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
+	service, err := sheets.NewService(ctx, option.WithCredentialsFile(os.Getenv(ADC)))
 	if err != nil {
 		log.Fatalf("Unable to retrieve Sheets client: %v", err)
 	}

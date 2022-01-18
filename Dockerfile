@@ -1,34 +1,42 @@
 
 
-FROM	golang:1.17 AS builder
+FROM golang:1.17-buster AS builder
+# FROM golang:1.17 AS builder
 
-ARG		SERVICE
-ARG		EXECUTABLE
-ENV		SERVICE=${SERVICE}
-ENV		EXECUTABLE=${EXECUTABLE}
+ARG	SERVICE
+ARG	EXECUTABLE
+ENV	SERVICE=${SERVICE}
+ENV	EXECUTABLE=${EXECUTABLE}
 
-WORKDIR	/go/src/app/${SERVICE}
+WORKDIR	/go/src
 
+COPY	go.mod ./
+COPY	go.sum ./
+RUN		go mod download
 COPY	. .
 
-RUN		go get ./...
+
 RUN		go generate ./...
-RUN		go build -o ${EXECUTABLE} ${SERVICE}.go
+RUN		mkdir ../${SERVICE}
 
+RUN		go build -o ../${SERVICE} ${EXECUTABLE}.go
 
-# FROM	golang:1.17-alpine
-FROM	golang:1.17
+# FROM golang:1.17-alpine
+FROM golang:1.17
+# FROM gcr.io/distroless/base-debian10
+# FROM busybox
 
-ARG			SERVICE
-ARG			EXECUTABLE
-ENV			SERVICE=${SERVICE}
-ENV			EXECUTABLE=${EXECUTABLE}
+ARG	SERVICE
+ARG	EXECUTABLE
+ENV	SERVICE=${SERVICE}
+ENV	EXECUTABLE=${EXECUTABLE}
 
-WORKDIR		/go/${SERVICE}
+WORKDIR /
 
-COPY		--from=builder /go/src/app/${SERVICE} .
-RUN			mv .secrets /secrets/
+RUN mkdir ${SERVICE}
 
-RUN			chmod -R 777 /go
+COPY --from=builder /go/${SERVICE} /${SERVICE}
 
-ENTRYPOINT	["sh", "-c", "/go/graphql/docker-entrypoint.sh"]
+WORKDIR		/${SERVICE}
+COPY		./docker-entrypoint.sh .
+COPY		.env .
