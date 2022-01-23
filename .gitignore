@@ -18,8 +18,6 @@ graph/schema.resolvers.go
 # Go specific
 pkg
 vendor
-go.mod
-go.sum
 
 # Docker specific
 # Dockerfile
