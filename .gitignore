@@ -1,15 +1,15 @@
 
 
 # gqlgen specific
-graph/generated
-graph/schema.resolvers.go
+graph/generated/*.go
+graph/*.resolvers.go
 
 # weja specific
-#.fd.*
+# .fd.*
+# .run
 .secrets
 .env
 .dist
-.run
 .ARCHIVE
 .SAVE
 **/.secrets
