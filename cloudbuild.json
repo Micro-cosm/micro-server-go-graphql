@@ -9,7 +9,10 @@
             "--region=us-central1",
             "--platform=managed",
             "--allow-unauthenticated",
-            "--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/secrets/credentials.json",
+            "--set-env-vars=IS_LOCAL=false",
+            "--set-env-vars=IS_REMOTE=true",
+            "--set-env-vars=REMOTE_PORT=8080",
+            "--set-env-vars=TZ=America/Denver",
             "--set-env-vars=ALIAS=${_TARGET_ALIAS}",
             "--set-env-vars=DEBUG=${_DEBUG}",
             "--set-env-vars=EXECUTABLE=${_EXECUTABLE}",
@@ -17,7 +20,8 @@
             "--set-env-vars=LOGS=${_LOGS}",
             "--set-env-vars=ROUTE_BASE=${_ROUTE_BASE}",
             "--set-env-vars=SERVICE=${_SERVICE}",
-            "--set-env-vars=TITLE=${_TITLE}"
+            "--set-env-vars=TITLE=${_TITLE}",
+            "--command=/${_EXECUTABLE}"
         ]
     }]
 }

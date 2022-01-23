@@ -4,14 +4,23 @@ version: '3.8'
 
 services:
     graphql:
-        image: ${IMAGE_URL}
         build:
+            args:
+                SERVICE:    ${SERVICE}
+                EXECUTABLE: ${EXECUTABLE}
             context: .
-        container_name: ${CONTAINER}
+        container_name: "${CONTAINER}"
+        entrypoint: "/${SERVICE}"
+        # env_file: ".env.${TARGET_ALIAS}"
         environment:
-            - GOOGLE_APPLICATION_CREDENTIALS=/secrets/credentials.json
+            - ALIAS=${TARGET_ALIAS}
             - DEBUG=${DEBUG}
             - EXECUTABLE=${EXECUTABLE}
+            - IS_DEBUG=${IS_DEBUG}
+            - IS_TEST=${IS_TEST}
+            - IS_LOCAL=${IS_LOCAL}
+            - IS_REMOTE=${IS_REMOTE}
+            - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
             - LOGS=${LOGS}
             - LOCAL_PORT=${TARGET_LOCAL_PORT}
             - REMOTE_PORT=${TARGET_REMOTE_PORT}
@@ -19,13 +28,10 @@ services:
             - SERVICE=${SERVICE}
             - TITLE=${TITLE}
             - TZ=America/Denver
+        image: "${IMAGE_URL}"
+        ports:
+            - 0.0.0.0:${TARGET_LOCAL_PORT}:${TARGET_REMOTE_PORT}
+        restart: unless-stopped
         volumes:
             - ./.secrets:/.secrets
-        ports:
-            - "0.0.0.0:${TARGET_LOCAL_PORT}:${TARGET_REMOTE_PORT}"
-        entrypoint:
-            - /bin/sh
-            - -c
-            - /${SERVICE}/docker-entrypoint.sh
-#        env_file:
-#            - .env.${TARGET_ALIAS}
+

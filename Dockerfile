@@ -1,42 +1,23 @@
 
 
-FROM golang:1.17-buster AS builder
-# FROM golang:1.17 AS builder
+FROM		golang:1.17-bullseye AS builder
 
-ARG	SERVICE
-ARG	EXECUTABLE
-ENV	SERVICE=${SERVICE}
-ENV	EXECUTABLE=${EXECUTABLE}
+ARG			EXECUTABLE
 
-WORKDIR	/go/src
+WORKDIR		/go/src/app
 
-COPY	go.mod ./
-COPY	go.sum ./
-RUN		go mod download
-COPY	. .
+ADD			. /go/src/app
+
+RUN			go generate ./...		# gqlgen interface creation
+
+RUN			go get -d -v ./...
+RUN			go vet -v
+RUN			go test -v
+
+RUN			CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/app
+
+RUN			mv /go/bin/app /go/bin/${EXECUTABLE}
 
 
-RUN		go generate ./...
-RUN		mkdir ../${SERVICE}
-
-RUN		go build -o ../${SERVICE} ${EXECUTABLE}.go
-
-# FROM golang:1.17-alpine
-FROM golang:1.17
-# FROM gcr.io/distroless/base-debian10
-# FROM busybox
-
-ARG	SERVICE
-ARG	EXECUTABLE
-ENV	SERVICE=${SERVICE}
-ENV	EXECUTABLE=${EXECUTABLE}
-
-WORKDIR /
-
-RUN mkdir ${SERVICE}
-
-COPY --from=builder /go/${SERVICE} /${SERVICE}
-
-WORKDIR		/${SERVICE}
-COPY		./docker-entrypoint.sh .
-COPY		.env .
+FROM gcr.io/distroless/static
+COPY --from=builder /go/bin/${EXECUTABLE} /

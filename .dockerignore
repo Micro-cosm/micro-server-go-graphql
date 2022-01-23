@@ -1,13 +1,35 @@
 
 
-**/*.md
-.dist
+
+# gqlgen specific
+graph/generated
+graph/schema.resolvers.go
+
+# weja specific
+.secrets
 .fd.*
-.gitignore
-.dockerignore
-.git
-.idea
+.env
+.dist
 .run
+**/*.SAVE
+**/.secrets
+.ARCHIVE
 .SAVE
+
+# Go specific
+pkg
+vendor
+go.mod
+go.sum
+
+# Docker specific
 Dockerfile
 docker-compose.yml
+.dockerignore
+
+# misc
+.gitignore
+.git
+.idea
+**/*.md
+**/.DS_Store
